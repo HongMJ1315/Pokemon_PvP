@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 <?php
 session_start();  //很重要，可以用的變數存在session裡
 $username=$_SESSION["username"];
@@ -17,6 +19,7 @@ if($roomID != NULL){
 }
 
 ?>
+>>>>>>> 63e47ed2f116056a5f99526454845497af9eea77
 
 <html>
 
@@ -91,6 +94,12 @@ if($roomID != NULL){
     #loginButton:hover {
       background-color: #3b4af6;
     }
+    .centered-text {
+            text-align: center;
+            color: #3b4af6; /* 藍色 */
+            margin-top: 50vh; /* 將文字置於頁面垂直中央 */
+            transform: translateY(-50%);
+      }
   </style>
   <script>
     function redirectToChoosePage() {
@@ -132,6 +141,22 @@ if($roomID != NULL){
   </script>
 </head>
 <body>
+    <?php
+        session_start();  //很重要，可以用的變數存在session裡
+        $username=$_SESSION["username"];
+        $id = $_SESSION["id"];
+        echo "<h1 class="centered-text">你好 ".$username."</h1>";
+        echo "<h1 class="centered-text">你的ID是 ".$id."</h1>";
+        $roomID = $_SESSION["roomID"];
+        if($id == NULL){
+            echo "<script>alert('請先登入'); window.location.href='index.php';</script>";
+        }
+        if($roomID != NULL){
+            echo "<h1>你的房間號碼是 ".$roomID."</h1>";
+            //三秒後跳轉
+            header("Refresh:3;url=room.php");
+        }
+    ?>
     <button id="loginButton" onclick="redirectToChoosePage()">Enter</button>
     <button id="createRoomButton" onclick="createRoomButton()">Create Room</button>
     <button id="createRoomButton" onclick="joinRoomButton()">Join Room</button>
