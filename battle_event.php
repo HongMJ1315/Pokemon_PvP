@@ -29,7 +29,7 @@
         getPlayerHP($db, $roomID);
     }
     elseif($operator == "SetPlayerHP"){
-        setPlayerHP($db, $roomID, $userID2, $value);
+        setPlayerHP($db, $userID2, $value);
     }
     elseif($operator =="Attack"){
         attack($db,$roomID,$userID2,$value,$value1,$value2,$value3,$value4);
@@ -49,16 +49,16 @@ room(roomID, player1ID, player2ID,
     turn, effect, skills, damage, statu)
 player(playerID, playerHp, playerPokemon, playerStatus)
 */  
-    function setPlayerHP($db, $roomID, $userID, $value){
+    function setPlayerHP($db, $userID, $value){
         $sql = 
         "UPDATE player
         SET playerHp = :playerHp
-        WHERE playerID = (SELECT playerID = :userID FROM room WHERE roomID =:roomID);";
+        WHERE playerID = :userID;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':playerHp', $value);
-        $stmt->bindParam(':roomID', $roomID);
         $stmt->bindParam(':userID', $userID);
         $stmt->execute();
+        echo "success ". $value. " " .$userID;
     }
     function getPlayerHP($db, $roomID){
         $sql = 
@@ -152,7 +152,7 @@ player(playerID, playerHp, playerPokemon, playerStatus)
 
 
     function attack($db,$roomID,$userID,$value,$value1,$value2,$value3,$value4){
-        $sql = "UPDATE room SET turn = :turn ,effect = :effect ,skill = :skill ,damage = :damage WHERE roomID = :roomID;";
+        $sql = "UPDATE room SET turn = :turn ,effect = :effect ,skills = :skill ,damage = :damage WHERE roomID = :roomID;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':turn', $value);
         $stmt->bindParam(':effect', $value1);

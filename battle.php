@@ -45,7 +45,7 @@
             top: 0;
             right: 0;
         }
-        #pokemonIdDisplay {
+        #player1PokemonDisplay{
             position: absolute;
             top: 80px;
             font-size: 30px;
@@ -54,7 +54,7 @@
         }
 
         /* 顯示Random ID 的樣式 */
-        #randIdDisplay {
+        #player2PokemonDisplay {
             position: absolute;
             top: 80px;
             right: 10px;
@@ -75,6 +75,23 @@
             width: 300px;
             height: 300px;
         }
+
+        #player1Name{
+            position: absolute;
+            top: 500px;
+            font-size: 30px;
+            font-weight: 900;
+            color:rgb(81, 17, 232);
+        }
+        #player2Name{
+            position: absolute;
+            top: 500px;
+            right: 10px;
+            font-size: 30px;
+            font-weight: 900;
+            color:rgb(81, 17, 232);
+        }
+
         .button-container {
             text-align: center; /* 讓按鈕置中 */
         } 
@@ -156,9 +173,11 @@
     <!-- 血條2 -->
     <progress id="player2Health" class="healthBar" value="100" max="300"></progress>
     <div id="player1PokemonDisplay"></div>
+    <div id="player1Name"></div>
     <img src="Abra.png" id="player1PokemonImage">
     <!-- 顯示 Random ID 的元素 -->
     <div id="player2PokemonDisplay"></div>
+    <div id="player2Name"></div>
     <img src="Dragonite.png" id="player2PokemonImage">
     <div class="button-container" id="button-container">
         <button id="button1">
@@ -200,17 +219,144 @@
             }
         }
         var player1, player2;
+        
+        $("#button1").click(function(){
+            attack(0);
+        });
+        $("#button2").click(function(){
+            attack(1);
+        });
+        $("#button3").click(function(){
+            attack(2);
+        });
+        $("#button4").click(function(){
+            attack(3);
+        });
+
+
+        function attack(buttonIndex){
+            if(player1.id == userID){
+                var skillID = player1.pokemon.skills[buttonIndex];
+                console.log(skill);
+                var skillInfo = skill.find(function (s) {
+                    return s.id == skillID;
+                });
+                var attackTypes = skillInfo.types;
+                var defenseTypes = player2.pokemon.types;
+                var parm = typesparm(attackTypes, defenseTypes);
+                var damage = (skillInfo.power * 0.4 + player1.pokemon.attack) * parm - player2.pokemon.defense;
+                var effect = 0;
+                if(parm == 0.391) effect = 0;
+                else if(parm == 0.625) effect = 1;
+                else if(parm == 1.0) effect = 2;
+                else if(parm == 1.6) effect = 3;
+                else if(parm == 2.56) effect = 4;
+                var skills = skillInfo.id;
+                console.log(damage);
+                console.log(effect);
+                console.log(skills);
+             
+
+            }
+            else{
+                var skillID = player2.pokemon.skills[buttonIndex];
+                var skillInfo = skill.find(function (s) {
+                    return s.id == skillID;
+                });
+                var attackTypes = skillInfo.types;
+                var defenseTypes = player1.pokemon.types;
+                var parm = typesparm(attackTypes, defenseTypes);
+                var damage = (skillInfo.power * 0.4 + player2.pokemon.attack) * parm - player1.pokemon.defense;
+                var effect = 0;
+                if(parm == 0.391) effect = 0;
+                else if(parm == 0.625) effect = 1;
+                else if(parm == 1.0) effect = 2;
+                else if(parm == 1.6) effect = 3;
+                else if(parm == 2.56) effect = 4;
+                var skills = skillInfo.id;
+                console.log(damage);
+                console.log(effect);
+                console.log(skills);
+
+            }
+            var nxt = 0;
+            if(userID == player1.id) nxt = player2.id;
+            else nxt = player1.id;
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "Attack",
+                    value: nxt,
+                    value1: effect,
+                    value2: skills,
+                    value3: damage,
+                    value4: skillID
+                },
+                success: function (result) {
+                    console.log(result);
+                    $("#button-container").hide();
+                },
+                error: function (message) {
+                    console.log(message);
+                }
+            });
+            if(userID == player1.id){
+                player2.pokemon.hp -= damage;
+                $.ajax({
+                    url: "battle_event.php",
+                    type: "GET",
+                    data: {
+                        operator: "SetPlayerHP",
+                        userID2: player2.id,
+                        value: player2.pokemon.hp
+                    },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (message) {
+                        console.log(message);
+                    }
+                });
+                $("#battleLog").append("<p>" + player1.name + "使用了" + skillInfo.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
+                $("#player2Health").attr("value", player2.pokemon.hp);
+            }
+            else{
+                player1.pokemon.hp -= damage;
+                $.ajax({
+                    url: "battle_event.php",
+                    type: "GET",
+                    data: {
+                        operator: "SetPlayerHP",
+                        userID2: player1.id,
+                        value: player1.pokemon.hp
+                    },
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (message) {
+                        console.log(message);
+                    }
+                });
+                $("#battleLog").append("<p>" + player2.name + "使用了" + skillInfo.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
+                $("#player1Health").attr("value", player1.pokemon.hp);
+            }
+            interval = setInterval(getTurn, 1000);
+
+        }
+
+
 
         function typesparm(attackTypes, defenseTypes) {
             var parm = 1;
-            var attackTypes = skills.find(function (s) {
+            var attackTypes = type.find(function (s) {
                 return s.name == attackTypes;
             });
             if (defenseTypes.length > 1) {
-                var defenseTypes1 = skills.find(function (s) {
+                var defenseTypes1 = type.find(function (s) {
                     return s.name == defenseTypes[0];
                 });
-                var defenseTypes2 = skills.find(function (s) {
+                var defenseTypes2 = type.find(function (s) {
                     return s.name == defenseTypes[1];
                 });
                 if (attackTypes.counter.includes(defenseTypes1.name)) {
@@ -228,7 +374,7 @@
             }
             console.log(defenseTypes);
             if (defenseTypes.length == 1) {
-                var defenseTypes1 = skills.find(function (s) {
+                var defenseTypes1 = type.find(function (s) {
                     return s.name == defenseTypes;
                 });
                 if (attackTypes.counter.includes(defenseTypes1.name)) {
@@ -238,10 +384,10 @@
                     parm /= 1.6;
                 }
             }
-            console.log(parm);
+            // console.log(parm);
             return parm;
         }
-        function setNewHP(){
+        function getDamageInfo(){
             $.ajax({
                 url: "battle_event.php",
                 type: "GET",
@@ -263,6 +409,16 @@
                         },
                         success: function (result){
                             console.log(result);
+                            if(userID == player1.id){
+                                player1.pokemon.hp -= damage;
+                                $("#player1Health").attr("value", player1.pokemon.hp);
+                                $("#battleLog").append("<p>" + player1.name + "使用了" + skill + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
+                            }
+                            else{
+                                player2.pokemon.hp -= damage;
+                                $("#player2Health").attr("value", player2.pokemon.hp);
+                                $("#battleLog").append("<p>" + player2.name + "使用了" + skill + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
+                            }
                         },
                         error: function (message) {
                             console.log(message);
@@ -286,10 +442,11 @@
                     console.log(result);
                     var turn = JSON.parse(result);
                     console.log(turn);
+                    console.log(userID);
                     if(turn.turn == userID){
                         $("#button-container").show();
                         interval = clearInterval(interval);
-                        setNewHP();
+                        getDamageInfo();
                     }
                     else{
                         $("#button-container").hide();
@@ -334,6 +491,7 @@
         }
 
         function initPlayerHP(){
+            console.log("init player hp");
             $.ajax({
                 url: "battle_event.php",
                 type: "GET",
@@ -342,7 +500,9 @@
                     userID2: player2.id,
                     value: player2.pokemon.hp
                 },
-
+                success: function (result) {
+                    console.log(result);
+                },
                 error: function (message) {
                     console.log(message);
                 }
@@ -355,13 +515,13 @@
                     userID2: player1.id,
                     value: player1.pokemon.hp
                 },
-
+                success: function (result) {
+                    console.log(result);
+                },
                 error: function (message) {
                     console.log(message);
                 }
             });
-
-
         }
 
         function getPlayerPokemon(){
@@ -378,8 +538,8 @@
                     player2Pokemon = playerPokemon.player2PokemonID;
                     console.log(player1Pokemon);
                     console.log(player2Pokemon);
-                    $("#player1PokemonDisplay").html(player1Pokemon);
-                    $("#player2PokemonDisplay").html(player2Pokemon);
+                    // $("#player1PokemonDisplay").html(player1Pokemon);
+                    // $("#player2PokemonDisplay").html(player2Pokemon);
                     $("#player1PokemonImage").attr("src", "pokemon/" + player1Pokemon + ".png");
                     $("#player2PokemonImage").attr("src", "pokemon/" + player2Pokemon + ".png");
                     $("body").show();
@@ -397,6 +557,48 @@
                     $("#player1Health").attr("value", player1.pokemon.hp);
                     $("#player2Health").attr("max", player2.pokemon.hp);
                     $("#player2Health").attr("value", player2.pokemon.hp);
+                    $("#player1PokemonDisplay").html(player1.pokemon.chineseName);
+                    $("#player2PokemonDisplay").html(player2.pokemon.chineseName);
+                    if(userID == player1.id) {
+                        console.log(player1.pokemon.skills);
+                        var skill1 = skill.find(function (s) {
+                            return s.id == player1.pokemon.skills[0];
+                        });
+                        var skill2 = skill.find(function (s) {
+                            return s.id == player1.pokemon.skills[1];
+                        });
+                        var skill3 = skill.find(function (s) {
+                            return s.id == player1.pokemon.skills[2];
+                        });
+                        var skill4 = skill.find(function (s) {
+                            return s.id == player1.pokemon.skills[3];
+                        });
+                        console.log(skill1);
+                        $("#button1").html(skill1.name);
+                        $("#button2").html(skill2.name);
+                        $("#button3").html(skill3.name);
+                        $("#button4").html(skill4.name);
+                    }
+                    else{
+                        console.log(player2.pokemon.skills);
+                        var skill1 = skill.find(function (s) {
+                            return s.id == player2.pokemon.skills[0];
+                        });
+                        var skill2 = skill.find(function (s) {
+                            return s.id == player2.pokemon.skills[1];
+                        });
+                        var skill3 = skill.find(function (s) {
+                            return s.id == player2.pokemon.skills[2];
+                        });
+                        var skill4 = skill.find(function (s) {
+                            return s.id == player2.pokemon.skills[3];
+                        });
+                        console.log(skill1);
+                        $("#button1").html(skill1.name);
+                        $("#button2").html(skill2.name);
+                        $("#button3").html(skill3.name);
+                        $("#button4").html(skill4.name);
+                    }
                     if(userID == player1.id) initTurn();
                     interval = setInterval(getTurn, 1000);
                 },
@@ -418,6 +620,8 @@
                     console.log(playerInfo);
                     player1 = new Player(playerInfo.player1ID, playerInfo.player1Name, null, playerInfo.player1Status);
                     player2 = new Player(playerInfo.player2ID, playerInfo.player2Name, null, playerInfo.player2Status);
+                    $("#player1Name").html(player1.name);
+                    $("#player2Name").html(player2.name);
                     getPlayerPokemon();
                 },
                 error: function (xhr) {
@@ -469,6 +673,7 @@
         }
         function init(){
             //hide body
+            $("#button-container").hide();
             $("body").hide();
             getData();
 
