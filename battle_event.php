@@ -6,6 +6,12 @@
     $pokemon = isset($_SESSION["pokemon"])?$_SESSION["pokemon"]:null;
     $operator = $_GET["operator"];
     $value = isset($_GET["value"])?$_GET["value"]:null;
+    //attack用
+    $value1 = isset($_GET["value1"])?$_GET["value1"]:null;
+    $value2 = isset($_GET["value2"])?$_GET["value2"]:null;
+    $value3 = isset($_GET["value3"])?$_GET["value3"]:null;
+    $value4 = isset($_GET["value4"])?$_GET["value4"]:null;
+    //
     $userID2 = isset($_GET["userID2"])?$_GET["userID2"]:null;
     if($operator == "GetPlayerPokemon"){
         getPlayerPokemon($db, $roomID, $userID);
@@ -133,5 +139,17 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         echo json_encode($result);
     }
 
+
+    function attack($db, $roomID,$userID,$value,$value1,$value2,$value3,$value4){
+        $sql = "UPDATE room SET turn = :turn ,effect = :effect ,skill = :skill ,damage = :damage WHERE roomID = :roomID;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':turn', $value);
+        $stmt->bindParam(':effect', $value1);
+        $stmt->bindParam(':skill', $value2);
+        $stmt->bindParam(':damage', $value3);
+        $stmt->bindParam(':roomID', $roomID);
+        $stmt->execute();
+        setPlayerHP($db, $roomID, $userID, $value4);
+    }
 
 ?>
