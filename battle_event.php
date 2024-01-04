@@ -31,7 +31,18 @@
     elseif($operator == "SetPlayerHP"){
         setPlayerHP($db, $roomID, $userID2, $value);
     }
-    
+    elseif($operator =="Attack"){
+        attack($db,$roomID,$userID2,$value,$value1,$value2,$value3,$value4);
+    }
+    elseif($operator == "GetEffect"){
+        getEffect($db, $roomID);
+    }
+    elseif($operator == "GetSkills"){
+        getSkills($db, $roomID);
+    }
+    elseif($operator == "GetDamage"){
+        getDamage($db, $roomID);
+    }
 
 /*
 room(roomID, player1ID, player2ID,
@@ -140,7 +151,7 @@ player(playerID, playerHp, playerPokemon, playerStatus)
     }
 
 
-    function attack($db, $roomID,$userID,$value,$value1,$value2,$value3,$value4){
+    function attack($db,$roomID,$userID,$value,$value1,$value2,$value3,$value4){
         $sql = "UPDATE room SET turn = :turn ,effect = :effect ,skill = :skill ,damage = :damage WHERE roomID = :roomID;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':turn', $value);
@@ -150,6 +161,48 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         $stmt->bindParam(':roomID', $roomID);
         $stmt->execute();
         setPlayerHP($db, $roomID, $userID, $value4);
+    }
+    //defend
+    function getEffect($db, $roomID){
+        $sql = "SELECT effect FROM room WHERE roomID = :roomID;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':roomID', $roomID);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $effect = $row["effect"];
+        // to JSON
+        $result = [
+            "effect" => $effect
+        ];
+        echo json_encode($result);
+    }
+
+    function getSkills($db, $roomID){
+        $sql = "SELECT skills FROM room WHERE roomID = :roomID;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':roomID', $roomID);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $skills = $row["skills"];
+        // to JSON
+        $result = [
+            "skills" => $skills
+        ];
+        echo json_encode($result);
+    }
+
+    function getDamage($db, $roomID){
+        $sql = "SELECT damage FROM room WHERE roomID = :roomID;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':roomID', $roomID);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $effect = $row["damage"];
+        // to JSON
+        $result = [
+            "damage" => $damage
+        ];
+        echo json_encode($result);
     }
 
 ?>
