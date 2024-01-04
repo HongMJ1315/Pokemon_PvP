@@ -216,7 +216,6 @@ $roomID = $_SESSION["roomID"];
 
         // 開始遊戲的函數
         function startGame() {
-            console.log("startGame");
             // alert('游戏开始！');
             $.ajax({
                 url: "room_event.php",
@@ -224,8 +223,6 @@ $roomID = $_SESSION["roomID"];
                 data: {
                     operator: "Start",
                     value: "<?php echo $userID; ?>"
-                },
-                success: function (response) {
                 },
                 error: function (xhr) {
                     console.log(xhr);
@@ -243,7 +240,6 @@ $roomID = $_SESSION["roomID"];
                     value: "<?php echo $userID; ?>"
                 },
                 success: function (response) {
-                    console.log(response);
                     resetPlayerRoom();
                 },
                 error: function (xhr) {
@@ -308,10 +304,8 @@ $roomID = $_SESSION["roomID"];
                     operator: "CheckRoom"
                 },
                 success: function (response) {
-                    console.log(response);
                     // 將 JSON 格式的字串轉換成 JavaScript 的物件
                     const roomInfo = JSON.parse(response);
-                    console.log(roomInfo);
                     if(roomInfo.roomID == null){
 
                         resetPlayerRoom();
@@ -336,13 +330,11 @@ $roomID = $_SESSION["roomID"];
                     operator: "GetPlayerInfo"
                 },
                 success: function (response) {
-                    console.log(response);
                     // 將 JSON 格式的字串轉換成 JavaScript 的物件
                     const playerInfo = JSON.parse(response);
                     if(playerInfo.length == 0){
                         return;
                     }
-                    console.log(playerInfo);
                     if(playerInfo.player2Name == null){
                         document.getElementById('player2').querySelector('.player-info').textContent = "Player ID:";
                         document.getElementById('player2').querySelector('img').src = "";
@@ -381,10 +373,8 @@ $roomID = $_SESSION["roomID"];
                 success: function (response) {
                     // 將 JSON 格式的字串轉換成 JavaScript 的物件
                     const playerInfo = JSON.parse(response);
-                    console.log(playerInfo);
                     //檢查 playerInfo 長度
                     if(playerInfo.length == 0){
-                        console.log("playerInfo == []");
                         interval = clearInterval(interval);
                         // interval2 = clearInterval(interval2);
                         resetPlayerRoom();
@@ -411,7 +401,6 @@ $roomID = $_SESSION["roomID"];
         }
     
         function init(){
-            console.log("init");
             $.ajax({
                 url: "room_event.php",
                 type: "GET",
@@ -419,11 +408,9 @@ $roomID = $_SESSION["roomID"];
                     operator: "GetPlayerInfo"
                 },
                 success: function (response) {
-                    console.log(response);
                     // 將 JSON 格式的字串轉換成 JavaScript 的物件
                     const playerInfo = JSON.parse(response);
                     if(playerInfo == []){
-                        console.log("playerInfo == []");
                         return;
                     }
                     setPlayerInfo(playerInfo.player1Name, document.getElementById('player1'));
@@ -449,9 +436,6 @@ $roomID = $_SESSION["roomID"];
                         operator: "UpdatePlayer2Status",
                         value: 0
                     },
-                    success: function (response) {
-                        console.log(response);
-                    },
                     error: function (xhr) {
                         console.log(xhr);
                     }
@@ -469,9 +453,7 @@ $roomID = $_SESSION["roomID"];
                         operator: "UpdatePlayer2Status",
                         value: 1
                     },
-                    success: function (response) {
-                        console.log(response);
-                    },
+
                     error: function (xhr) {
                         console.log(xhr);
                     }

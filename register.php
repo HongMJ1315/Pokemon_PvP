@@ -5,7 +5,7 @@ function registerUser($db) {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST["username"];
         $password = $_POST["password"];
-
+        $password = password_hash($password, PASSWORD_DEFAULT);
         // Check if the username already exists
         $checkQuery = "SELECT * FROM user WHERE username=:username";
         $checkStatement = $db->prepare($checkQuery);

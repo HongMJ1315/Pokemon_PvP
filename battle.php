@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,10 +160,10 @@
     <!-- 顯示 Random ID 的元素 -->
     <div id="player2PokemonDisplay"></div>
     <img src="Dragonite.png" id="player2PokemonImage">
-    <div class="button-container">
+    <div class="button-container" id="button-container">
         <button id="button1">
             Button1
-            <span class="button-description">鋼</span> 
+            <!-- <span class="button-description">鋼</span>  -->
         </button>
         <button id="button2">Button 2</button>
         <button id="button3">Button 3</button>
@@ -172,15 +175,32 @@
         var pokemonData = [];
         var skill = [];
         var type = [];
-        var player1Pokemon = null;
-        var player2Pokemon = null;
-        
-        function caculateDamage(){
+        var interval = null;
 
+        const userID = "<?php echo $_SESSION["id"]; ?>";
+        const roomID = "<?php echo $_SESSION["roomID"]; ?>";
+        class Pokemon{
+            constructor(name, chineseName, hp, attack, defense, speed, types, skills){
+                this.name = name;
+                this.chineseName = chineseName;
+                this.hp = hp;
+                this.attack = attack;
+                this.defense = defense;
+                this.speed = speed;
+                this.types = types;
+                this.skills = skills;
+            }
         }
-        function setFirstAttacker(){
+        class Player{
+            constructor(id, name, pokemon, status){
+                this.id = id;
+                this.name = name;
+                this.pokemon = pokemon;
+                this.status = status;
+            }
+        }
+        var player1, player2;
 
-        }
         function typesparm(attackTypes, defenseTypes) {
             var parm = 1;
             var attackTypes = skills.find(function (s) {
@@ -221,6 +241,129 @@
             console.log(parm);
             return parm;
         }
+        function setNewHP(){
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "GetDamageInfo"
+                },
+                success: function (result) {
+                    var damageInfo = JSON.parse(result);
+                    console.log(damageInfo);
+                    var damage = damageInfo.damage;
+                    var skill = damageInfo.skill;
+                    var effect = damageInfo.effect;
+                    if(damage == null) return;
+                    $.ajax({
+                        url: "battle_event.php",
+                        type: "GET",
+                        data: {
+                            operator: "GetPlayerHP"
+                        },
+                        success: function (result){
+                            console.log(result);
+                        },
+                        error: function (message) {
+                            console.log(message);
+                        }
+
+                    });
+                },
+                error: function (message) {
+                    console.log(message);
+                }
+            });
+        }
+        function getTurn(){
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "GetTurn"
+                },
+                success: function (result) {
+                    console.log(result);
+                    var turn = JSON.parse(result);
+                    console.log(turn);
+                    if(turn.turn == userID){
+                        $("#button-container").show();
+                        interval = clearInterval(interval);
+                        setNewHP();
+                    }
+                    else{
+                        $("#button-container").hide();
+                    }
+                },
+                error: function (message) {
+                    console.log(message);
+                }
+            });
+        }
+        function initTurn(){
+            var player1Speed = player1.pokemon.speed;
+            var player2Speed = player2.pokemon.speed;
+            console.log(player1Speed);
+            console.log(player2Speed);
+            var v; // playerID
+            if(player1Speed > player2Speed){
+                v = player1.id;
+            }
+            else if(player1Speed < player2Speed){
+                v = player2.id;
+            }
+            else{
+                var random = Math.floor(Math.random() * 2);
+                if(random == 0) v = player1.id;
+                else v = player2.id;
+            }
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "SetTurn",
+                    value: v
+                },
+                success: function (result) {
+                    initPlayerHP();
+                },
+                error: function (message) {
+                    console.log(message);
+                }
+            });
+        }
+
+        function initPlayerHP(){
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "SetPlayerHP",
+                    userID2: player2.id,
+                    value: player2.pokemon.hp
+                },
+
+                error: function (message) {
+                    console.log(message);
+                }
+            });
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "SetPlayerHP",
+                    userID2: player1.id,
+                    value: player1.pokemon.hp
+                },
+
+                error: function (message) {
+                    console.log(message);
+                }
+            });
+
+
+        }
+
         function getPlayerPokemon(){
             $.ajax({
                 url: "battle_event.php",
@@ -240,9 +383,45 @@
                     $("#player1PokemonImage").attr("src", "pokemon/" + player1Pokemon + ".png");
                     $("#player2PokemonImage").attr("src", "pokemon/" + player2Pokemon + ".png");
                     $("body").show();
+                    var player1PokemonInfo = pokemonData.find(function (p) {
+                        return p.name == player1Pokemon;
+                    });
+                    var player2PokemonInfo = pokemonData.find(function (p) {
+                        return p.name == player2Pokemon;
+                    });
+                    player1.pokemon = new Pokemon(player1PokemonInfo.name, player1PokemonInfo.chineseName, player1PokemonInfo.hp + 150, player1PokemonInfo.attack, player1PokemonInfo.defense, player1PokemonInfo.speed, player1PokemonInfo.types, player1PokemonInfo.skills);
+                    player2.pokemon = new Pokemon(player2PokemonInfo.name, player2PokemonInfo.chineseName, player2PokemonInfo.hp + 150, player2PokemonInfo.attack, player2PokemonInfo.defense, player2PokemonInfo.speed, player2PokemonInfo.types, player2PokemonInfo.skills);
+                    console.log(player1);
+                    console.log(player2);
+                    $("#player1Health").attr("max", player1.pokemon.hp);
+                    $("#player1Health").attr("value", player1.pokemon.hp);
+                    $("#player2Health").attr("max", player2.pokemon.hp);
+                    $("#player2Health").attr("value", player2.pokemon.hp);
+                    if(userID == player1.id) initTurn();
+                    interval = setInterval(getTurn, 1000);
                 },
                 error: function (message) {
                     console.log(message);
+                }
+            });
+        }
+        function getPlayerInfo() {
+            $.ajax({
+                url: "room_event.php",
+                type: "GET",
+                data: {
+                    operator: "GetPlayerInfo"
+                },
+                success: function (response) {
+                    // 將 JSON 格式的字串轉換成 JavaScript 的物件
+                    const playerInfo = JSON.parse(response);
+                    console.log(playerInfo);
+                    player1 = new Player(playerInfo.player1ID, playerInfo.player1Name, null, playerInfo.player1Status);
+                    player2 = new Player(playerInfo.player2ID, playerInfo.player2Name, null, playerInfo.player2Status);
+                    getPlayerPokemon();
+                },
+                error: function (xhr) {
+                    console.log(xhr);
                 }
             });
         }
@@ -254,7 +433,6 @@
                 dataType: "json",
                 success: function (data) {
                     pokemonData = data;
-                    console.log(pokemonData);
                     // get skill.json
                     $.ajax({
                         url: "skill.json",
@@ -262,7 +440,6 @@
                         dataType: "json",
                         success: function (data) {
                             skill = data;
-                            console.log(skill);
                             // get type.json
                             $.ajax({
                                 url: "type.json",
@@ -270,7 +447,7 @@
                                 dataType: "json",
                                 success: function (data) {
                                     type = data;
-                                    getPlayerPokemon();
+                                    getPlayerInfo();
                                 },
                                 error: function (jqXHR) {
                                     alert("發生錯誤: " + jqXHR.status);

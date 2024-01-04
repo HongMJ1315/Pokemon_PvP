@@ -73,7 +73,6 @@
         }
         function showConfirmation(imgId) {
             // 獲取點擊的圖片的 id
-            console.log(imgId);
             var pokemonId = document.getElementById(imgId).id;
     
             // 在 pokemonData 陣列中找到對應的 Pokemon 物件
@@ -104,7 +103,6 @@
                             pokemon: selectedPokemon.name,
                         },
                         success: function (response) {
-                            console.log(response);
                             $("#pokemon").hide();
                             // window.location.href = "lobby.php";
                         },
@@ -113,7 +111,6 @@
                         }
                     });
                 }
-                console.log(selectedPokemon);
             } 
             else {
                 alert("找不到符合的寶可夢資料。");
@@ -130,7 +127,6 @@
                     operator: "CheckAllPlayerStatus",
                 },
                 success: function (response) {
-                    console.log(response);
                     if(response == 1){
                         $.ajax({
                             url: "choose_event.php",
@@ -148,7 +144,7 @@
                         });
                         
                     }
-                    else console.log("wait");
+                    
                 },
                 error: function (err) {
                     console.log(err);
@@ -179,7 +175,6 @@
                                     roomID: roomID
                                 },
                                 success: function (response) {
-                                    console.log(response);
                                     const playerInfo = JSON.parse(response);
                                     $("#pokemon").show();
                                     // $("#loading").hide();

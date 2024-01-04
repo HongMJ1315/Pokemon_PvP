@@ -5,7 +5,8 @@ $db = require_once "config.php";
 // Define variables and initialize with empty values
 $username = $_POST["username"];
 $password = $_POST["password"];
-$hash=password_hash($password,PASSWORD_DEFAULT);
+// $hash=password_hash($password,PASSWORD_DEFAULT);
+
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
@@ -21,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             // Verify the password using password_verify()
-            if (password_verify($row["password"],$hash)) {
+            if (password_verify($password, $row["password"])) {
                 // Start the session
                 session_start();
                 // Store data in session variables

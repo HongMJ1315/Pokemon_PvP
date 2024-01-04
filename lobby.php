@@ -1,25 +1,3 @@
-<<<<<<< HEAD
-=======
-<?php
-session_start();  //很重要，可以用的變數存在session裡
-$username=$_SESSION["username"];
-$id = $_SESSION["id"];
-echo "<h1>你好 ".$username."</h1>";
-echo "<h1>你的ID是 ".$id."</h1>";
-$roomID = isset($_SESSION["roomID"]) ? $_SESSION["roomID"] : NULL;
-if($id == NULL){
-    echo "<script>alert('請先登入'); window.location.href='index.php';</script>";
-    exit;
-}
-if($roomID != NULL){
-    echo "<h1>你的房間號碼是 ".$roomID."</h1>";
-    //三秒後跳轉
-    header("Refresh:3;url=room.php");
-    exit;
-}
-
-?>
->>>>>>> 63e47ed2f116056a5f99526454845497af9eea77
 
 <html>
 
@@ -129,9 +107,6 @@ if($roomID != NULL){
             data: {
                 operator: "insertPlayer"
             },
-            success: function (result) {
-                console.log(result);
-            },
             error: function (message) {
                 console.log(message);
             }
@@ -145,8 +120,8 @@ if($roomID != NULL){
         session_start();  //很重要，可以用的變數存在session裡
         $username=$_SESSION["username"];
         $id = $_SESSION["id"];
-        echo "<h1 class="centered-text">你好 ".$username."</h1>";
-        echo "<h1 class="centered-text">你的ID是 ".$id."</h1>";
+        echo "<h1 class='centered-text'>你好 ".$username."</h1>";
+        echo "<h1 class='centered-text'>你的ID是 ".$id."</h1>";
         $roomID = $_SESSION["roomID"];
         if($id == NULL){
             echo "<script>alert('請先登入'); window.location.href='index.php';</script>";
