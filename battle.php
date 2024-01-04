@@ -386,6 +386,35 @@
             // console.log(parm);
             return parm;
         }
+        function isGameOver(player1HP, player2HP) {
+    return player1HP <= 0 || player2HP <= 0;
+}
+function endgame() {
+    // 在這裡執行結束遊戲相關的操作
+    console.log("遊戲結束!");
+
+    // 可以顯示結束遊戲的消息或執行其他操作
+    alert("遊戲結束!");
+
+    // 重定向到遊戲結束的頁面（示例）
+    window.location.href = "result.php";
+
+    // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
+    $.ajax({
+        url: "battle_event.php",
+        type: "GET",
+        data: {
+            operator: "EndGame"
+        },
+        success: function (result) {
+            console.log("結束遊戲成功:", result);
+        },
+        error: function (message) {
+            console.log("結束遊戲時發生錯誤:", message);
+        }
+    });
+}
+
         function getDamageInfo(){
             $.ajax({
                 url: "battle_event.php",
@@ -400,6 +429,12 @@
                     var skills = damageInfo.skill;
                     var effect = damageInfo.effect;
                     if(damage == null) return;
+                    //add
+                    if (isGameOver(player1.pokemon.hp, player2.pokemon.hp)) {
+                endgame();
+                return;
+            }
+            //
                     $.ajax({
                         url: "battle_event.php",
                         type: "GET",
