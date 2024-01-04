@@ -340,6 +340,11 @@
                 $("#battleLog").append("<p>[4]" + player2.name + "使用了" + skillInfo.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
                 $("#player1Health").attr("value", player1.pokemon.hp);
             }
+            if(isGameOver(player1.pokemon.hp, player2.pokemon.hp)){
+                endgame();
+                interval = clearInterval(interval);
+                return;
+            }
             interval = setInterval(getTurn, 1000);
 
         }
@@ -387,33 +392,33 @@
             return parm;
         }
         function isGameOver(player1HP, player2HP) {
-    return player1HP <= 0 || player2HP <= 0;
-}
-function endgame() {
-    // 在這裡執行結束遊戲相關的操作
-    console.log("遊戲結束!");
-
-    // 可以顯示結束遊戲的消息或執行其他操作
-    alert("遊戲結束!");
-
-    // 重定向到遊戲結束的頁面（示例）
-    window.location.href = "result.php";
-
-    // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
-    $.ajax({
-        url: "battle_event.php",
-        type: "GET",
-        data: {
-            operator: "EndGame"
-        },
-        success: function (result) {
-            console.log("結束遊戲成功:", result);
-        },
-        error: function (message) {
-            console.log("結束遊戲時發生錯誤:", message);
+            return player1HP <= 0 || player2HP <= 0;
         }
-    });
-}
+        function endgame() {
+            // 在這裡執行結束遊戲相關的操作
+            console.log("遊戲結束!");
+
+            // 可以顯示結束遊戲的消息或執行其他操作
+            alert("遊戲結束!");
+
+            // 重定向到遊戲結束的頁面（示例）
+            window.location.href = "result.php";
+
+            // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
+            $.ajax({
+                url: "battle_event.php",
+                type: "GET",
+                data: {
+                    operator: "EndGame"
+                },
+                success: function (result) {
+                    console.log("結束遊戲成功:", result);
+                },
+                error: function (message) {
+                    console.log("結束遊戲時發生錯誤:", message);
+                }
+            });
+        }
 
         function getDamageInfo(){
             $.ajax({
@@ -430,10 +435,7 @@ function endgame() {
                     var effect = damageInfo.effect;
                     if(damage == null) return;
                     //add
-                    if (isGameOver(player1.pokemon.hp, player2.pokemon.hp)) {
-                endgame();
-                return;
-            }
+                    
             //
                     $.ajax({
                         url: "battle_event.php",
@@ -457,6 +459,11 @@ function endgame() {
                                 $("#player2Health").attr("value", player2.pokemon.hp);
                                 $("#battleLog").append("<p>[2]" + player1.name + "使用了" + skillName.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
                             }
+                            const playerHP = JSON.parse(result);
+                            if (isGameOver(playerHP.player1Hp, playerHP.player2Hp)) {
+                                endgame();
+                                return;
+                            }       
                         },
                         error: function (message) {
                             console.log(message);
