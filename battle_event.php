@@ -31,17 +31,13 @@
         setPlayerHP($db, $userID2, $value);
     }
     elseif($operator =="Attack"){
-        attack($db,$roomID,$userID2,$value,$value1,$value2,$value3,$value4);
+        attack($db,$roomID,$userID2,$value,$value1,$value2,$value3);
     }
-    elseif($operator == "GetEffect"){
-        getEffect($db, $roomID);
+    elseif($operator == "EndGame"){
+        endgame($db, $roomID);
     }
-    elseif($operator == "GetSkills"){
-        getSkills($db, $roomID);
-    }
-    elseif($operator == "GetDamage"){
-        getDamage($db, $roomID);
-    }
+   
+    
 
 /*
 room(roomID, player1ID, player2ID,
@@ -202,5 +198,22 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         ];
         echo json_encode($result);
     }
-
+    function endgame($db, $roomID) {
+        // 刪除資料庫中指定 roomID 的房間
+        $sql = "DELETE FROM room WHERE roomID = :roomID";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(":roomID", $roomID, PDO::PARAM_STR);
+        
+        try {
+            $stmt->execute();
+            echo "成功刪除房間: " . $roomID;
+        } catch (PDOException $e) {
+            echo "刪除房間時發生錯誤: " . $e->getMessage();
+        }
+    
+        // 清除 session 中的 roomID
+        unset($_SESSION['roomid']);
+        unset($_SESSION['pokemon']);
+        
+    }
 ?>
