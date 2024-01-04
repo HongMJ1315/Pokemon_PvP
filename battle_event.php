@@ -10,7 +10,6 @@
     $value1 = isset($_GET["value1"])?$_GET["value1"]:null;
     $value2 = isset($_GET["value2"])?$_GET["value2"]:null;
     $value3 = isset($_GET["value3"])?$_GET["value3"]:null;
-    $value4 = isset($_GET["value4"])?$_GET["value4"]:null;
     //
     $userID2 = isset($_GET["userID2"])?$_GET["userID2"]:null;
     if($operator == "GetPlayerPokemon"){
@@ -151,7 +150,7 @@ player(playerID, playerHp, playerPokemon, playerStatus)
     }
 
 
-    function attack($db,$roomID,$userID,$value,$value1,$value2,$value3,$value4){
+    function attack($db,$roomID,$userID,$value,$value1,$value2,$value3){
         $sql = "UPDATE room SET turn = :turn ,effect = :effect ,skills = :skill ,damage = :damage WHERE roomID = :roomID;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':turn', $value);
@@ -160,7 +159,6 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         $stmt->bindParam(':damage', $value3);
         $stmt->bindParam(':roomID', $roomID);
         $stmt->execute();
-        setPlayerHP($db, $roomID, $userID, $value4);
     }
     //defend
     function getEffect($db, $roomID){

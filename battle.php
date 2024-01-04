@@ -290,8 +290,7 @@
                     value: nxt,
                     value1: effect,
                     value2: skills,
-                    value3: damage,
-                    value4: skillID
+                    value3: damage
                 },
                 success: function (result) {
                     console.log(result);
@@ -318,7 +317,7 @@
                         console.log(message);
                     }
                 });
-                $("#battleLog").append("<p>" + player1.name + "使用了" + skillInfo.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
+                $("#battleLog").append("<p>[3]" + player1.name + "使用了" + skillInfo.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
                 $("#player2Health").attr("value", player2.pokemon.hp);
             }
             else{
@@ -338,7 +337,7 @@
                         console.log(message);
                     }
                 });
-                $("#battleLog").append("<p>" + player2.name + "使用了" + skillInfo.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
+                $("#battleLog").append("<p>[4]" + player2.name + "使用了" + skillInfo.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
                 $("#player1Health").attr("value", player1.pokemon.hp);
             }
             interval = setInterval(getTurn, 1000);
@@ -398,7 +397,7 @@
                     var damageInfo = JSON.parse(result);
                     console.log(damageInfo);
                     var damage = damageInfo.damage;
-                    var skill = damageInfo.skill;
+                    var skills = damageInfo.skill;
                     var effect = damageInfo.effect;
                     if(damage == null) return;
                     $.ajax({
@@ -409,15 +408,19 @@
                         },
                         success: function (result){
                             console.log(result);
+                            var skillName = skill.find(function (s) {
+                                return s.id == skills;
+                            });
+                            console.log(skillName);
                             if(userID == player1.id){
                                 player1.pokemon.hp -= damage;
                                 $("#player1Health").attr("value", player1.pokemon.hp);
-                                $("#battleLog").append("<p>" + player1.name + "使用了" + skill + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
+                                $("#battleLog").append("<p>[1]" + player2.name + "使用了" + skillName.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
                             }
                             else{
                                 player2.pokemon.hp -= damage;
                                 $("#player2Health").attr("value", player2.pokemon.hp);
-                                $("#battleLog").append("<p>" + player2.name + "使用了" + skill + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
+                                $("#battleLog").append("<p>[2]" + player1.name + "使用了" + skillName.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
                             }
                         },
                         error: function (message) {
