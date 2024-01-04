@@ -475,6 +475,10 @@
         }
         init();
         
+        $("#button1").click(function(){});
+        $("#button2").click(function(){});
+        $("#button3").click(function(){});
+        $("#button4").click(function(){});
     </script>
 </body>
 </html>

@@ -35,9 +35,8 @@ player(playerID, playerHp, playerPokemon, playerStatus)
     function setPlayerHP($db, $roomID, $userID, $value){
         $sql = 
         "UPDATE player
-        JOIN room ON player.playerID = room.player1ID OR player.playerID = room.player2ID
-        SET player.playerHp = :playerHp
-        WHERE room.roomID = :roomID AND player.playerID = :userID;";
+        SET playerHp = :playerHp
+        WHERE playerID = (SELECT playerID = :userID FROM room WHERE roomID =:roomID);";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':playerHp', $value);
         $stmt->bindParam(':roomID', $roomID);
