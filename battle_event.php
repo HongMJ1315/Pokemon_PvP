@@ -34,7 +34,7 @@
         attack($db,$roomID,$userID2,$value,$value1,$value2,$value3);
     }
     elseif($operator == "EndGame"){
-        endgame($db, $roomID);
+        endgame($db, $roomID, $value);
     }
    
     
@@ -198,12 +198,12 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         ];
         echo json_encode($result);
     }
-    function endgame($db, $roomID) {
+    function endgame($db, $roomID, $value) {
         // 刪除資料庫中指定 roomID 的房間
         $sql = "DELETE FROM room WHERE roomID = :roomID";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":roomID", $roomID, PDO::PARAM_STR);
-        
+        $_SESSION['result'] = $value;
         try {
             $stmt->execute();
             echo "成功刪除房間: " . $roomID;
@@ -212,8 +212,10 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         }
     
         // 清除 session 中的 roomID
-        unset($_SESSION['roomid']);
+        unset($_SESSION['roomID']);
         unset($_SESSION['pokemon']);
+
+        header("Location: result.php");
         
     }
 ?>

@@ -3,8 +3,10 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/cwtexfangsong.css">
   <style>
     body {
       margin: 0;
@@ -16,68 +18,51 @@
       align-items: center;
       justify-content: center;
     }
-
-    #loginButton {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 30px;
-      margin: 30% 2px 0;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-      width: 18%;
-      height: 10%;
+    #createRoomButton1{
+        position: absolute;
+        right: 52%;
+        bottom: 40%;
+        width:170px;
+        height:80px;
+        font-size:24px;
+      }
+    #createRoomButton2{
+        position: absolute;
+        right: 38%;
+        bottom: 40%;
+        width:170px;
+        height:80px;
+        font-size:24px;
     }
-
-    #logoutButton {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 30px;
-      margin: 2% 2px 0;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-      width: 18%;
-      height: 10%;
-      position: absolute;
-      right: 20px;
-      top: 20px;
+    #logoutButton{
+        position: absolute;
+        right:5%;
+        top:5%;
+        width:170px;
+        height:80px;
+        font-size:24px;
     }
-    #createRoomButton {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 30px;
-      margin: 30% 2px 0;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-      width: 18%;
-      height: 10%;
-    }
-    #loginButton:hover {
-      background-color: #3b4af6;
+    @media screen and (max-width: 768px) {
+        #createRoomButton1{
+          width: 80%;
+          left: 10%;
+          bottom: 55%;
+        }
+        #createRoomButton2 {
+          width: 80%; /* 讓按鈕佔據整個寬度 */
+          left:10%;
+          bottom:40%;
+        }
+        body{
+          background-size: cover;
+        }
     }
     .centered-text {
-            text-align: center;
-            color: #3b4af6; /* 藍色 */
-            margin-top: 50vh; /* 將文字置於頁面垂直中央 */
-            transform: translateY(-50%);
-      }
+        text-align: center;
+        color: #3b4af6; /* 藍色 */
+        margin-top: 50vh; /* 將文字置於頁面垂直中央 */
+        transform: translateY(-50%);
+    }
   </style>
   <script>
     function redirectToChoosePage() {
@@ -122,11 +107,11 @@
         $id = $_SESSION["id"];
         echo "<h1 class='centered-text'>你好 ".$username."</h1>";
         echo "<h1 class='centered-text'>你的ID是 ".$id."</h1>";
-        $roomID = $_SESSION["roomID"];
+        $roomID = isset($_SESSION["roomID"]) ? $_SESSION["roomID"] : "";
         if($id == NULL){
             echo "<script>alert('請先登入'); window.location.href='index.php';</script>";
         }
-        if($roomID != NULL){
+        if($roomID != ""){
             echo "<h1>你的房間號碼是 ".$roomID."</h1>";
             //三秒後跳轉
             header("Refresh:3;url=room.php");

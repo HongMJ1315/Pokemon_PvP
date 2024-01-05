@@ -162,6 +162,25 @@
             color: #555; /* 文字颜色 */
             font-size: 12px; /* 文字大小 */
         }
+        #battleLog{
+            height: 200px; overflow-y: scroll; color: #e6de45; background-color: #dc8d17; width: 400px; height: 300px;
+        }
+        @media screen and (max-width: 768px) {
+            #battleLog{
+                transform: translate(-50%, 30%);
+                bottom: 10%;
+                right:center;
+                width:400px;
+                height: 120px;
+            }
+            #button1,#button2,#button3,#button4{
+                transform: translate(0%, -100%);
+                width:200px;
+            }
+            #player1PokemonImage,#player2PokemonImage{
+                transform: translate(0%,-10%);
+            }
+        }
 
     </style>
 </head>
@@ -341,7 +360,7 @@
                 $("#player1Health").attr("value", player1.pokemon.hp);
             }
             if(isGameOver(player1.pokemon.hp, player2.pokemon.hp)){
-                endgame();
+                endgame(1);
                 interval = clearInterval(interval);
                 return;
             }
@@ -394,7 +413,7 @@
         function isGameOver(player1HP, player2HP) {
             return player1HP <= 0 || player2HP <= 0;
         }
-        function endgame() {
+        function endgame(value) {
             // 在這裡執行結束遊戲相關的操作
             console.log("遊戲結束!");
 
@@ -404,20 +423,24 @@
             // 重定向到遊戲結束的頁面（示例）
             window.location.href = "result.php";
 
-            // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
-            $.ajax({
-                url: "battle_event.php",
-                type: "GET",
-                data: {
-                    operator: "EndGame"
-                },
-                success: function (result) {
-                    console.log("結束遊戲成功:", result);
-                },
-                error: function (message) {
-                    console.log("結束遊戲時發生錯誤:", message);
-                }
-            });
+            // // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
+            // $.ajax({
+            //     url: "battle_event.php",
+            //     type: "GET",
+            //     data: {
+            //         operator: "EndGame",
+            //         value: value
+            //     },
+            //     success: function (result) {
+            //         console.log("結束遊戲成功:", result);
+            //     },
+            //     error: function (message) {
+            //         console.log("結束遊戲時發生錯誤:", message);
+            //     }
+            // });
+            
+            window.location.href = "battle_event.php?operator=EndGame&value=" + value;
+
         }
 
         function getDamageInfo(){
@@ -461,7 +484,7 @@
                             }
                             const playerHP = JSON.parse(result);
                             if (isGameOver(playerHP.player1Hp, playerHP.player2Hp)) {
-                                endgame();
+                                endgame(0);
                                 return;
                             }       
                         },

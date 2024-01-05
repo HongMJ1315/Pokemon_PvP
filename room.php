@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <?php
-require_once("config.php");
-session_start();
-$userID = $_SESSION["id"];
-// echo $userID;
-$roomID = $_SESSION["roomID"];
+    require_once("config.php");
+    session_start();
+    $userID = $_SESSION["id"];
+    $roomID = $_SESSION["roomID"];
 
-
+    echo "<div style='width: 100%; height: 100vh; position: relative;'>
+        <h1 style='position: absolute; top: 0%; left: 5%;' class='background-container'><span style='color: red;'>your room number is " . $roomID . "</span></h1>
+      </div>";
 ?>
+
+
 
 <head>
     <meta charset="UTF-8">
@@ -69,7 +71,6 @@ $roomID = $_SESSION["roomID"];
         .status-text {
             margin-top: 10px;
             background-color: #e0e0e0;
-            /* 背景區隔顏色 */
             padding: 10px;
             border-radius: 5px;
         }
@@ -117,7 +118,7 @@ $roomID = $_SESSION["roomID"];
             /* display: none; */
             position: absolute;
             bottom: 230px;
-            right: 80px;
+            right: 260px;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -162,12 +163,34 @@ $roomID = $_SESSION["roomID"];
             position: absolute;
             width: 110px;
             height: 30px;
-            right: 480px;
-            bottom: 350px;
+            right: 430px;
+            bottom: 300px;
+        }
+        @media screen and (max-width: 768px) {
+            .player-container{
+                width:100%;
+                padding: 0px;
+            }
+            #player1{
+                position: absolute;
+                left: 0%;
+            }
+            #player2{
+                position: absolute;
+                right: 0%;
+            }
+            #status-text{
+                position: absolute;
+                right: 17%;
+            }
+            #playerleave{
+                position: absolute;
+                left:5%;
+                width:20%;
+            }
         }
     </style>
 </head>
-
 <body>
     <div class="background-container"></div>
     <div class="player-container">
