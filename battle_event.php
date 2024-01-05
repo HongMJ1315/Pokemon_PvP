@@ -216,6 +216,7 @@ player(playerID, playerHp, playerPokemon, playerStatus)
         unset($_SESSION['pokemon']);
 
         header("Location: result.php");
+        // header("Refresh:3;url=result.php");
         
     }
 ?>

@@ -207,7 +207,7 @@
         <button id="button3">Button 3</button>
         <button id="button4">Button 4</button>
     </div>
-    <div id="battleLog" style="height: 200px; overflow-y: scroll; color: #e6de45; background-color: #dc8d17; width: 400px; height: 300px;">戰鬥情況-------------------</div>
+    <div id="battleLog" >戰鬥情況-------------------</div>
 
     <script>  
         var pokemonData = [];
@@ -421,15 +421,14 @@
             alert("遊戲結束!");
 
             // 重定向到遊戲結束的頁面（示例）
-            window.location.href = "result.php";
+            // window.location.href = "result.php";
 
-            // // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
+            // 如果需要向後端發送結束遊戲的信號，可以使用 Ajax
             // $.ajax({
             //     url: "battle_event.php",
             //     type: "GET",
             //     data: {
-            //         operator: "EndGame",
-            //         value: value
+            //         operator: "EndGame"
             //     },
             //     success: function (result) {
             //         console.log("結束遊戲成功:", result);
@@ -438,7 +437,6 @@
             //         console.log("結束遊戲時發生錯誤:", message);
             //     }
             // });
-            
             window.location.href = "battle_event.php?operator=EndGame&value=" + value;
 
         }

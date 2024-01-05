@@ -117,9 +117,8 @@
             header("Refresh:3;url=room.php");
         }
     ?>
-    <button id="loginButton" onclick="redirectToChoosePage()">Enter</button>
-    <button id="createRoomButton" onclick="createRoomButton()">Create Room</button>
-    <button id="createRoomButton" onclick="joinRoomButton()">Join Room</button>
-    <button id="logoutButton" onclick="redirectToindexPage()">登出</button>
+    <button id="createRoomButton1" class="btn btn-info" onclick="createRoomButton()">Create Room</button>
+    <button id="createRoomButton2" class="btn btn-info" onclick="joinRoomButton()">Join Room</button>
+    <button id="logoutButton" class="btn btn-danger" onclick="redirectToindexPage()">登出</button>
 </body>
 </html>
