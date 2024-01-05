@@ -63,4 +63,4 @@ jobs:
           app-name: 'PokemonPvP'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C452489AD944423284DC104C77D30829 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4DCF7AD107C741CAAA479B446F88C57C }}
