@@ -286,6 +286,7 @@
                 var defenseTypes = player1.pokemon.types;
                 var parm = typesparm(attackTypes, defenseTypes);
                 var damage = (skillInfo.power * 0.4 + player2.pokemon.attack) * parm - player1.pokemon.defense;
+                damage = Math.max(0, Math.floor(damage));
                 var effect = 0;
                 if(parm == 0.391) effect = 0;
                 else if(parm == 0.625) effect = 1;

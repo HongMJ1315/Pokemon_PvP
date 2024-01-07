@@ -38,15 +38,12 @@
         }
 
         .player-container {
-            text-align: center;
+            position: absolute;
+            right: 20%;
             background-color: #b5eef9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* 添加陰影效果 */
             width: 60%;
-            /* 調整容器寬度 */
             height: 45%;
+            border-radius: 10px;
         }
 
         .player {
@@ -69,10 +66,12 @@
         }
 
         .status-text {
-            margin-top: 10px;
             background-color: #e0e0e0;
             padding: 10px;
             border-radius: 5px;
+            position: absolute;
+            right:20%;
+            bottom: 0%;
         }
 
         .button-container {
@@ -159,17 +158,49 @@
             text-decoration: none;
         }
 
-        .status-text {
+        #status-text {
             position: absolute;
             width: 110px;
             height: 30px;
-            right: 430px;
-            bottom: 300px;
+            right: 100px;
+            bottom: 230px;
+        }
+        #playerleave{
+            position: absolute;
+            left:5%;
+            width:20%;
+            bottom:20%;
+        }
+        #playerleave{
+            position: absolute;
+            left:5%;
+            width:20%;
+            bottom:20%;
+        }
+        #player1start{
+            position: absolute;
+            left:53%;
+            width:20%;
+            bottom:20%;
+        }
+        #player2ready{
+            position: absolute;
+            left:53%;
+            width:20%;
+            bottom:20%;
+        }
+        #player2cancelready{
+            position: absolute;
+            left:75%;
+            width:20%;
+            bottom:20%;
         }
         @media screen and (max-width: 768px) {
             .player-container{
-                width:100%;
+                position: absolute;
+                width:90%;
                 padding: 0px;
+                left: 5%;
             }
             #player1{
                 position: absolute;
@@ -181,17 +212,42 @@
             }
             #status-text{
                 position: absolute;
-                right: 17%;
+                right: 14%;
+                bottom: 35%;
             }
             #playerleave{
                 position: absolute;
                 left:5%;
                 width:20%;
+                bottom:20%;
+            }
+            #playerleave{
+                position: absolute;
+                left:5%;
+                width:20%;
+                bottom:20%;
+            }
+            #player1start{
+                position: absolute;
+                left:53%;
+                width:20%;
+                bottom:20%;
+            }
+            #player2ready{
+                position: absolute;
+                left:53%;
+                width:20%;
+                bottom:20%;
+            }
+            #player2cancelready{
+                position: absolute;
+                left:75%;
+                width:20%;
+                bottom:20%;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="background-container"></div>
     <div class="player-container">
