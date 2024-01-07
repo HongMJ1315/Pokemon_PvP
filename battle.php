@@ -263,7 +263,8 @@
                 var attackTypes = skillInfo.types;
                 var defenseTypes = player2.pokemon.types;
                 var parm = typesparm(attackTypes, defenseTypes);
-                var damage = (skillInfo.power * 0.4 + player1.pokemon.attack) * parm - player2.pokemon.defense;
+                var damage = (skillInfo.power * 0.4 + player2.pokemon.attack) * parm - player1.pokemon.defense;
+                damage = Math.max(0, Math.floor(damage));
                 var effect = 0;
                 if(parm == 0.391) effect = 0;
                 else if(parm == 0.625) effect = 1;
@@ -294,11 +295,17 @@
                 else if(parm == 1.6) effect = 3;
                 else if(parm == 2.56) effect = 4;
                 var skills = skillInfo.id;
-                console.log(damage);
+                console.log("Damage " + damage);
                 console.log(effect);
                 console.log(skills);
 
             }
+            var paraResult = "";
+            if(effect == 0) paraResult = "沒有效果";
+            else if(effect == 1) paraResult = "不是很有效";
+            else if(effect == 2) paraResult = "普通攻擊";
+            else if(effect == 3) paraResult = "很有效";
+            else if(effect == 4) paraResult = "超級有效";
             var nxt = 0;
             if(userID == player1.id) nxt = player2.id;
             else nxt = player1.id;
@@ -337,7 +344,8 @@
                         console.log(message);
                     }
                 });
-                $("#battleLog").append("<p>[3]" + player1.name + "使用了" + skillInfo.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
+
+                $("#battleLog").append("<p>[3]" + player1.name + "使用了" + skillInfo.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + paraResult + "，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
                 $("#player2Health").attr("value", player2.pokemon.hp);
             }
             else{
@@ -357,7 +365,7 @@
                         console.log(message);
                     }
                 });
-                $("#battleLog").append("<p>[4]" + player2.name + "使用了" + skillInfo.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
+                $("#battleLog").append("<p>[4]" + player2.name + "使用了" + skillInfo.name + "，對" + player1.name + "造成了" + damage + "點傷害， " + paraResult + "，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
                 $("#player1Health").attr("value", player1.pokemon.hp);
             }
             if(isGameOver(player1.pokemon.hp, player2.pokemon.hp)){
@@ -471,15 +479,21 @@
                                 return s.id == skills;
                             });
                             console.log(skillName);
+                            var paraResult = "";
+                            if(effect == 0) paraResult = "沒有效果";
+                            else if(effect == 1) paraResult = "不是很有效";
+                            else if(effect == 2) paraResult = "普通攻擊";
+                            else if(effect == 3) paraResult = "很有效";
+                            else if(effect == 4) paraResult = "超級有效";
                             if(userID == player1.id){
                                 player1.pokemon.hp -= damage;
                                 $("#player1Health").attr("value", player1.pokemon.hp);
-                                $("#battleLog").append("<p>[1]" + player2.name + "使用了" + skillName.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
+                                $("#battleLog").append("<p>[1]" + player2.name + "使用了" + skillName.name + "，對" + player1.name + "造成了" + damage + "點傷害，" + paraResult + "，" + player1.name + "剩下" + player1.pokemon.hp + "點血量</p>");
                             }
                             else{
                                 player2.pokemon.hp -= damage;
                                 $("#player2Health").attr("value", player2.pokemon.hp);
-                                $("#battleLog").append("<p>[2]" + player1.name + "使用了" + skillName.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
+                                $("#battleLog").append("<p>[2]" + player1.name + "使用了" + skillName.name + "，對" + player2.name + "造成了" + damage + "點傷害，" + paraResult + "，" + player2.name + "剩下" + player2.pokemon.hp + "點血量</p>");
                             }
                             const playerHP = JSON.parse(result);
                             if (isGameOver(playerHP.player1Hp, playerHP.player2Hp)) {
