@@ -199,6 +199,7 @@
             .player-container{
                 position: absolute;
                 width:90%;
+                height:60%;
                 padding: 0px;
                 left: 5%;
             }
@@ -217,15 +218,9 @@
             }
             #playerleave{
                 position: absolute;
-                left:5%;
+                left:10%;
                 width:20%;
-                bottom:20%;
-            }
-            #playerleave{
-                position: absolute;
-                left:5%;
-                width:20%;
-                bottom:20%;
+                bottom:10%;
             }
             #player1start{
                 position: absolute;
